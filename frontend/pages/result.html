@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analysis Result — StartupValidator</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .result-header { background: linear-gradient(135deg, rgba(124,111,255,0.1) 0%, transparent 60%); border-bottom: 1px solid var(--border); padding: 2.5rem 0; margin-bottom: 2.5rem; }
+    .result-header-inner { display: flex; align-items: flex-start; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; }
+    .result-header h1 { font-family: var(--font-head); font-size: 2rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .result-meta { color: var(--text-muted); font-size: 0.9rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+    .score-badges { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .score-pill { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.5rem; text-align: center; min-width: 120px; }
+    .score-pill-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 600; }
+    .score-pill-value { font-family: var(--font-head); font-size: 2rem; font-weight: 800; color: var(--accent2); }
+    .score-pill-sub { font-size: 0.75rem; color: var(--text-dim); }
+    .section-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.75rem; margin-bottom: 1.5rem; }
+    .section-card h2 { font-family: var(--font-head); font-size: 1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 1rem; }
+    .section-card p { color: var(--text); line-height: 1.7; font-size: 0.97rem; }
+    .swot-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+    .swot-card { border-radius: var(--radius); padding: 1.4rem; }
+    .swot-card.strengths { background: rgba(52,211,153,0.07); border: 1px solid rgba(52,211,153,0.2); }
+    .swot-card.weaknesses { background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.2); }
+    .swot-card.opportunities { background: rgba(124,111,255,0.07); border: 1px solid rgba(124,111,255,0.2); }
+    .swot-card.threats { background: rgba(251,191,36,0.07); border: 1px solid rgba(251,191,36,0.2); }
+    .swot-title { font-family: var(--font-head); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.9rem; }
+    .swot-card.strengths .swot-title { color: var(--success); }
+    .swot-card.weaknesses .swot-title { color: var(--danger); }
+    .swot-card.opportunities .swot-title { color: var(--accent2); }
+    .swot-card.threats .swot-title { color: var(--warning); }
+    .swot-list li { font-size: 0.88rem; color: var(--text); padding: 0.3rem 0 0.3rem 1rem; position: relative; line-height: 1.5; }
+    .swot-list li::before { content: '•'; position: absolute; left: 0; color: var(--text-dim); }
+    .bullet-list li { padding: 0.4rem 0 0.4rem 1.25rem; position: relative; font-size: 0.95rem; line-height: 1.6; border-bottom: 1px solid var(--border); }
+    .bullet-list li:last-child { border-bottom: none; }
+    .bullet-list li::before { content: '→'; position: absolute; left: 0; color: var(--accent); }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .tag { background: var(--bg3); border: 1px solid var(--border); border-radius: 999px; padding: 0.35rem 0.85rem; font-size: 0.85rem; color: var(--text); }
+    .score-row { margin-bottom: 1.5rem; }
+    .score-row-label { display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-size: 0.9rem; }
+    .score-row-name { font-weight: 500; }
+    .score-row-val { font-family: var(--font-head); font-weight: 700; color: var(--accent2); }
+    @media (max-width: 600px) { .swot-grid { grid-template-columns: 1fr; } .result-header-inner { flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <a href="./dashboard.html" class="navbar-brand">⚡ StartupValidator</a>
+    <div class="navbar-links">
+      <a href="./ideas.html" class="nav-link">All Ideas</a>
+      <a href="./validate.html" class="btn btn-primary" style="font-size:0.85rem; padding: 0.45rem 1rem;">+ New Idea</a>
+    </div>
+  </nav>
+
+  <div id="loading" style="text-align:center; padding: 5rem 1rem; color: var(--text-muted);">
+    <span class="spinner" style="width:32px; height:32px; border-width:3px;"></span>
+    <p style="margin-top: 1rem;">Loading analysis...</p>
+  </div>
+
+  <div id="result-content" style="display:none;">
+    <div class="result-header">
+      <div class="container result-header-inner">
+        <div>
+          <h1 id="idea-name"></h1>
+          <div class="result-meta">
+            <span id="idea-industry" class="badge badge-purple"></span>
+            <span id="idea-date"></span>
+          </div>
+        </div>
+        <div class="score-badges">
+          <div class="score-pill"><div class="score-pill-label">Market Score</div><div class="score-pill-value" id="market-score"></div><div class="score-pill-sub">out of 10</div></div>
+          <div class="score-pill"><div class="score-pill-label">Success Probability</div><div class="score-pill-value" id="success-prob"></div><div class="score-pill-sub">percent</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-wrap">
+      <div class="section-card">
+        <h2>📈 Scores</h2>
+        <div class="score-row">
+          <div class="score-row-label"><span class="score-row-name">Market Score</span><span class="score-row-val" id="market-score-label"></span></div>
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" id="market-bar" style="width:0%"></div></div>
+        </div>
+        <div class="score-row" style="margin-bottom:0">
+          <div class="score-row-label"><span class="score-row-name">Success Probability</span><span class="score-row-val" id="success-prob-label"></span></div>
+          <div class="progress-bar-wrap"><div class="progress-bar-fill" id="success-bar" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="section-card" style="margin-bottom:0"><h2>🎯 Recommendation</h2><p id="recommendation"></p></div>
+        <div class="section-card" style="margin-bottom:0"><h2>🧠 Score Rationale</h2><p id="score-rationale"></p></div>
+      </div>
+      <br />
+
+      <div class="section-card" id="sources-card" style="display:none"><h2>🔎 Research Sources</h2><ul class="bullet-list" id="sources"></ul></div>
+
+      <div class="section-card"><h2>📋 Executive Summary</h2><p id="exec-summary"></p></div>
+
+      <div class="grid-2">
+        <div class="section-card" style="margin-bottom:0"><h2>🔍 Problem Being Solved</h2><p id="problem-solved"></p></div>
+        <div class="section-card" style="margin-bottom:0"><h2>👥 Target Audience</h2><p id="target-audience"></p></div>
+      </div>
+      <br />
+
+      <div class="section-card"><h2>⚔️ Competitors</h2><div class="tag-list" id="competitors"></div></div>
+
+      <div class="section-card">
+        <h2>📊 SWOT Analysis</h2>
+        <div class="swot-grid">
+          <div class="swot-card strengths"><div class="swot-title">✅ Strengths</div><ul class="swot-list" id="strengths"></ul></div>
+          <div class="swot-card weaknesses"><div class="swot-title">⚠️ Weaknesses</div><ul class="swot-list" id="weaknesses"></ul></div>
+          <div class="swot-card opportunities"><div class="swot-title">🚀 Opportunities</div><ul class="swot-list" id="opportunities"></ul></div>
+          <div class="swot-card threats"><div class="swot-title">🔥 Threats</div><ul class="swot-list" id="threats"></ul></div>
+        </div>
+      </div>
+
+      <div class="section-card"><h2>💰 Revenue Model</h2><p id="revenue-model"></p></div>
+
+      <div class="grid-2">
+        <div class="section-card" style="margin-bottom:0"><h2>🛠️ MVP Features</h2><ul class="bullet-list" id="mvp-features"></ul></div>
+        <div class="section-card" style="margin-bottom:0"><h2>⚡ Risks</h2><ul class="bullet-list" id="risks"></ul></div>
+      </div>
+      <br />
+
+      <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+        <a href="./validate.html" class="btn btn-primary btn-lg">✦ Validate Another Idea</a>
+        <a href="./ideas.html" class="btn btn-outline btn-lg">View All Ideas</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script>
+    requireAuth();
+
+    function makeList(ulId, items) {
+      const ul = document.getElementById(ulId);
+      ul.innerHTML = '';
+      if (!items || items.length === 0) {
+        const li = document.createElement('li');
+        li.textContent = 'No data available';
+        ul.appendChild(li);
+        return;
+      }
+      items.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        ul.appendChild(li);
+      });
+    }
+
+    async function loadResult() {
+      const id = new URLSearchParams(window.location.search).get('id');
+      if (!id) { window.location.href = './dashboard.html'; return; }
+
+      try {
+        const idea = await apiCall(`/ideas/${id}`);
+        const a = idea.analysis;
+
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('result-content').style.display = 'block';
+
+        document.getElementById('idea-name').textContent = idea.startupName;
+        document.getElementById('idea-industry').textContent = idea.industry;
+        document.getElementById('idea-date').textContent = formatDate(idea.createdAt);
+
+        const ms = a.marketScore || 0;
+        const sp = a.successProbability || 0;
+
+        document.getElementById('market-score').textContent = ms + '/10';
+        document.getElementById('success-prob').textContent = sp + '%';
+        document.getElementById('market-score-label').textContent = ms + ' / 10';
+        document.getElementById('success-prob-label').textContent = sp + '%';
+
+        setTimeout(() => {
+          document.getElementById('market-bar').style.width = (ms * 10) + '%';
+          document.getElementById('success-bar').style.width = sp + '%';
+        }, 200);
+
+        document.getElementById('recommendation').textContent = a.recommendation || 'N/A';
+        document.getElementById('score-rationale').textContent = a.scoreRationale || 'N/A';
+
+        if (a.sources && a.sources.length) {
+          document.getElementById('sources-card').style.display = 'block';
+          const sourceList = document.getElementById('sources');
+          sourceList.innerHTML = '';
+          a.sources.forEach(source => {
+            const li = document.createElement('li');
+            const link = document.createElement('a');
+            link.href = source.url;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            link.textContent = source.title;
+            li.appendChild(link);
+            sourceList.appendChild(li);
+          });
+        }
+
+        document.getElementById('exec-summary').textContent = a.executiveSummary || 'N/A';
+        document.getElementById('problem-solved').textContent = a.problemSolved || 'N/A';
+        document.getElementById('target-audience').textContent = a.targetAudience || 'N/A';
+        document.getElementById('revenue-model').textContent = a.revenueModel || 'N/A';
+
+        const competitorContainer = document.getElementById('competitors');
+        competitorContainer.innerHTML = '';
+        if (a.competitors && a.competitors.length) {
+          a.competitors.forEach(c => {
+            const tag = document.createElement('span');
+            tag.className = 'tag';
+            tag.textContent = c;
+            competitorContainer.appendChild(tag);
+          });
+        } else {
+          competitorContainer.textContent = 'No competitors found';
+        }
+
+        makeList('strengths', a.strengths);
+        makeList('weaknesses', a.weaknesses);
+        makeList('opportunities', a.opportunities);
+        makeList('threats', a.threats);
+        makeList('mvp-features', a.mvpFeatures);
+        makeList('risks', a.risks);
+
+      } catch (err) {
+        document.getElementById('loading').innerHTML = `
+          <div class="alert alert-error" style="max-width:500px; margin: 3rem auto;">${err.message}</div>
+          <br><a href="./dashboard.html" class="btn btn-outline">← Back to Dashboard</a>
+        `;
+      }
+    }
+
+    loadResult();
+  </script>
+</body>
+</html>

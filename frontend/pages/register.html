@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Register — StartupValidator</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .auth-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem 1rem; }
+    .auth-box { width: 100%; max-width: 440px; }
+    .auth-header { text-align: center; margin-bottom: 2rem; }
+    .auth-logo { font-family: var(--font-head); font-size: 1.4rem; font-weight: 800; background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; display: inline-block; margin-bottom: 1.5rem; }
+    .auth-header h1 { font-family: var(--font-head); font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; }
+    .auth-header p { color: var(--text-muted); font-size: 0.95rem; }
+    .auth-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2rem; }
+    .auth-footer { text-align: center; margin-top: 1.5rem; color: var(--text-muted); font-size: 0.9rem; }
+    .auth-footer a { color: var(--accent2); font-weight: 500; }
+    .auth-footer a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-box">
+      <div class="auth-header">
+        <a href="../index.html" class="auth-logo">⚡ StartupValidator</a>
+        <h1>Create your account</h1>
+        <p>Start validating your startup ideas today</p>
+      </div>
+      <div class="auth-card">
+        <div id="error-msg" class="alert alert-error" style="display:none;"></div>
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" placeholder="John Doe" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="john@example.com" required />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Minimum 6 characters" required />
+        </div>
+        <button class="btn btn-primary btn-full btn-lg" id="register-btn" onclick="handleRegister()">
+          Create Account
+        </button>
+      </div>
+      <div class="auth-footer">Already have an account? <a href="./login.html">Sign in</a></div>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script>
+    redirectIfLoggedIn();
+
+    async function handleRegister() {
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const btn = document.getElementById('register-btn');
+      const errorMsg = document.getElementById('error-msg');
+
+      errorMsg.style.display = 'none';
+
+      if (!name || !email || !password) {
+        errorMsg.textContent = 'Please fill all fields.';
+        errorMsg.style.display = 'block';
+        return;
+      }
+      if (password.length < 6) {
+        errorMsg.textContent = 'Password must be at least 6 characters.';
+        errorMsg.style.display = 'block';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Creating account...';
+
+      try {
+        const data = await apiCall('/auth/register', 'POST', { name, email, password });
+        saveAuth(data.token, data.user);
+        window.location.href = './dashboard.html';
+      } catch (err) {
+        errorMsg.textContent = err.message;
+        errorMsg.style.display = 'block';
+        btn.disabled = false;
+        btn.innerHTML = 'Create Account';
+      }
+    }
+
+    document.addEventListener('keypress', (e) => { if (e.key === 'Enter') handleRegister(); });
+  </script>
+</body>
+</html>

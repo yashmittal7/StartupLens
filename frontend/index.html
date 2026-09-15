@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>StartupValidator — Validate Your Idea with AI</title>
+  <link rel="stylesheet" href="./css/style.css" />
+  <style>
+    .hero { text-align: center; padding: 6rem 1.5rem 4rem; max-width: 800px; margin: 0 auto; }
+    .hero-tag { display: inline-block; background: var(--accent-glow); border: 1px solid rgba(124,111,255,0.25); color: var(--accent2); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; padding: 0.4rem 1rem; border-radius: 999px; margin-bottom: 1.5rem; }
+    .hero h1 { font-family: var(--font-head); font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800; line-height: 1.1; margin-bottom: 1.5rem; }
+    .hero h1 span { background: linear-gradient(135deg, var(--accent), #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero p { color: var(--text-muted); font-size: 1.15rem; max-width: 540px; margin: 0 auto 2.5rem; line-height: 1.7; }
+    .hero-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .features { padding: 5rem 1.5rem; max-width: 1100px; margin: 0 auto; }
+    .section-label { text-align: center; color: var(--accent); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; margin-bottom: 1rem; }
+    .section-title { font-family: var(--font-head); font-size: 2.2rem; font-weight: 800; text-align: center; margin-bottom: 0.75rem; }
+    .section-sub { text-align: center; color: var(--text-muted); margin-bottom: 3.5rem; font-size: 1rem; }
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
+    .feature-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.75rem; transition: border-color 0.2s, transform 0.2s; }
+    .feature-card:hover { border-color: var(--accent); transform: translateY(-3px); }
+    .feature-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .feature-card h3 { font-family: var(--font-head); font-size: 1.05rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .feature-card p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.6; }
+    .how-it-works { padding: 5rem 1.5rem; background: var(--bg2); }
+    .steps { display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap; margin-top: 3rem; }
+    .step { text-align: center; flex: 1; min-width: 180px; max-width: 240px; }
+    .step-num { width: 52px; height: 52px; border-radius: 50%; background: var(--accent-glow); border: 2px solid rgba(124,111,255,0.35); display: flex; align-items: center; justify-content: center; font-family: var(--font-head); font-size: 1.2rem; font-weight: 800; color: var(--accent2); margin: 0 auto 1rem; }
+    .step h3 { font-family: var(--font-head); font-size: 1rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .step p { color: var(--text-muted); font-size: 0.88rem; }
+    .cta-section { padding: 6rem 1.5rem; text-align: center; background: radial-gradient(ellipse at center, rgba(124,111,255,0.1) 0%, transparent 70%); }
+    .cta-section h2 { font-family: var(--font-head); font-size: 2.5rem; font-weight: 800; margin-bottom: 1rem; }
+    .cta-section p { color: var(--text-muted); margin-bottom: 2.5rem; font-size: 1.05rem; }
+    footer { border-top: 1px solid var(--border); padding: 2rem 1.5rem; text-align: center; color: var(--text-dim); font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar-brand">⚡ StartupValidator</div>
+    <div class="navbar-links">
+      <a href="./pages/login.html" class="nav-link">Login</a>
+      <a href="./pages/register.html" class="btn btn-primary">Get Started</a>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-tag">✦ AI-Powered Startup Analysis</div>
+    <h1>Validate Your <span>Startup Idea</span> Using AI</h1>
+    <p>Stop guessing. Get a full market analysis, SWOT breakdown, competitor insights, and revenue model suggestions in seconds.</p>
+    <div class="hero-buttons">
+      <a href="./pages/register.html" class="btn btn-primary btn-lg">Get Started — It's Free</a>
+      <a href="./pages/login.html" class="btn btn-outline btn-lg">Login</a>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="section-label">What you get</div>
+    <h2 class="section-title">Everything you need to validate</h2>
+    <p class="section-sub"></p>
+    <div class="features-grid">
+      <div class="feature-card"><div class="feature-icon">🎯</div><h3>AI Market Analysis</h3><p>Get a deep dive into your target market, audience, and potential opportunities.</p></div>
+      <div class="feature-card"><div class="feature-icon">⚔️</div><h3>Competitor Insights</h3><p>Discover who you're up against and what differentiates your idea.</p></div>
+      <div class="feature-card"><div class="feature-icon">📊</div><h3>SWOT Analysis</h3><p>Strengths, Weaknesses, Opportunities, and Threats — laid out clearly.</p></div>
+      <div class="feature-card"><div class="feature-icon">💰</div><h3>Revenue Model</h3><p>Get monetization strategy suggestions tailored to your startup.</p></div>
+    </div>
+  </section>
+
+  <section class="how-it-works">
+    <div class="section-label" style="text-align:center">Simple process</div>
+    <h2 class="section-title">How it works</h2>
+    <p class="section-sub">Three steps from idea to validation report</p>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><h3>Enter Your Idea</h3><p>Fill in your startup name, description, and industry.</p></div>
+      <div class="step"><div class="step-num">2</div><h3>AI Analyzes</h3><p>Gemini AI processes your idea and runs a full business analysis.</p></div>
+      <div class="step"><div class="step-num">3</div><h3>Get Your Report</h3><p>View your full validation report with scores and insights.</p></div>
+    </div>
+  </section>
+
+  <section class="cta-section">
+    <h2>Start Validating Now</h2>
+    <p>Join founders using AI to make smarter startup decisions</p>
+    <a href="./pages/register.html" class="btn btn-primary btn-lg">Create Free Account</a>
+  </section>
+
+  <footer><p>© 2024 StartupValidator. Built with ⚡ and AI.</p></footer>
+</body>
+</html>

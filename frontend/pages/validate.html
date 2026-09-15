@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Validate Idea — StartupValidator</title>
+  <link rel="stylesheet" href="../css/style.css" />
+  <style>
+    .validate-wrap { max-width: 680px; margin: 3rem auto; padding: 0 1.5rem; }
+    .form-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 2.5rem; }
+    .analyzing-overlay { display: none; position: fixed; inset: 0; background: rgba(10,10,15,0.9); backdrop-filter: blur(8px); z-index: 999; flex-direction: column; align-items: center; justify-content: center; gap: 1.5rem; text-align: center; }
+    .analyzing-overlay.active { display: flex; }
+    .analyzing-icon { font-size: 3.5rem; animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.1);opacity:0.8} }
+    .analyzing-overlay h2 { font-family: var(--font-head); font-size: 1.6rem; font-weight: 800; }
+    .analyzing-overlay p { color: var(--text-muted); }
+    .char-count { font-size: 0.8rem; color: var(--text-dim); text-align: right; margin-top: 0.3rem; }
+  </style>
+</head>
+<body>
+  <div class="analyzing-overlay" id="analyzing-overlay">
+    <div class="analyzing-icon">🤖</div>
+    <h2>Analyzing Your Idea...</h2>
+    <p>Gemini AI is reviewing your startup. This takes 10–20 seconds.</p>
+    <div class="spinner" style="width:32px; height:32px; border-width: 3px;"></div>
+  </div>
+
+  <nav class="navbar">
+    <a href="./dashboard.html" class="navbar-brand">⚡ StartupValidator</a>
+    <div class="navbar-links"><a href="./dashboard.html" class="nav-link">← Dashboard</a></div>
+  </nav>
+
+  <div class="validate-wrap">
+    <div style="margin-bottom: 2rem;">
+      <h1 class="page-title">Validate Your Idea</h1>
+      <p class="page-subtitle">Fill in the details and let AI do the heavy lifting</p>
+    </div>
+    <div class="form-card">
+      <div id="error-msg" class="alert alert-error" style="display:none;"></div>
+
+      <div class="form-group">
+        <label for="startupName">Startup Name</label>
+        <input type="text" id="startupName" placeholder="e.g. EduFlow, PaySwift, HealthTrack" maxlength="100" required />
+      </div>
+
+      <div class="form-group">
+        <label for="industry">Industry</label>
+        <select id="industry" required>
+          <option value="" disabled selected>Select an industry...</option>
+          <option value="EdTech">EdTech</option>
+          <option value="FinTech">FinTech</option>
+          <option value="Healthcare">Healthcare</option>
+          <option value="AI">AI</option>
+          <option value="E-Commerce">E-Commerce</option>
+          <option value="SaaS">SaaS</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Idea Description</label>
+        <textarea id="description" placeholder="Describe your startup idea in detail. What problem does it solve? Who is it for? How does it work?" rows="6" maxlength="1000" oninput="updateCharCount()" required></textarea>
+        <div class="char-count"><span id="char-count">0</span> / 1000 characters</div>
+      </div>
+
+      <button class="btn btn-primary btn-full btn-lg" id="analyze-btn" onclick="handleAnalyze()">
+        ✦ Analyze Idea
+      </button>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script>
+    requireAuth();
+
+    function updateCharCount() {
+      document.getElementById('char-count').textContent = document.getElementById('description').value.length;
+    }
+
+    async function handleAnalyze() {
+      const startupName = document.getElementById('startupName').value.trim();
+      const industry = document.getElementById('industry').value;
+      const description = document.getElementById('description').value.trim();
+      const btn = document.getElementById('analyze-btn');
+      const errorMsg = document.getElementById('error-msg');
+
+      errorMsg.style.display = 'none';
+
+      if (!startupName || !industry || !description) {
+        errorMsg.textContent = 'Please fill all fields before analyzing.';
+        errorMsg.style.display = 'block';
+        return;
+      }
+      if (description.length < 30) {
+        errorMsg.textContent = 'Please write a more detailed description (at least 30 characters).';
+        errorMsg.style.display = 'block';
+        return;
+      }
+
+      document.getElementById('analyzing-overlay').classList.add('active');
+      btn.disabled = true;
+
+      try {
+        const idea = await apiCall('/ideas', 'POST', { startupName, industry, description });
+        window.location.href = `./result.html?id=${idea._id}`;
+      } catch (err) {
+        document.getElementById('analyzing-overlay').classList.remove('active');
+        errorMsg.textContent = 'Analysis failed: ' + err.message;
+        errorMsg.style.display = 'block';
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
