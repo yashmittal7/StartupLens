@@ -1,6 +1,4 @@
 
-🚀 Live Demo(https://startuplens-1.onrender.com)
-
 
 # ⚡ StartupLens
 
