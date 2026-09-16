@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:5005/api';
+const API_URL = 'https://startuplens-wpne.onrender.com/api';
 
 function getToken() {
   return localStorage.getItem('token');
