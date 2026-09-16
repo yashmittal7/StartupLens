@@ -1,8 +1,15 @@
 const express = require('express');
 const router = express.Router();
-
+const rateLimit = require('express-rate-limit');
 const Idea = require('../models/Idea');
 const authMiddleware = require('../middleware/auth');
+const aiLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  limit: 5,
+  message: {
+    message: 'Too many startup analyses. Please try again later.'
+  }
+});
 const {
   generateStartupAnalysis,
 } = require('../services/geminiService');
@@ -230,7 +237,7 @@ function sanitizeAnalysis(analysis) {
 }
 
 // POST /api/ideas
-router.post('/', authMiddleware, async (req, res) => {
+router.post('/', authMiddleware, aiLimiter, async (req, res) => {
   try {
     const {
       startupName,
@@ -301,7 +308,7 @@ router.post('/', authMiddleware, async (req, res) => {
 
     const sanitizedAnalysis = sanitizeAnalysis(analysis);
 
-    sanitizedAnalysis.aiModel = 'Gemini 3.5 Flash Lite';
+    sanitizedAnalysis.aiModel = 'Gemini 3.6 Flash';
     sanitizedAnalysis.generatedAt = new Date().toISOString();
 
     const idea = new Idea({
