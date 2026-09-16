@@ -1,4 +1,8 @@
-# ⚡ StartupValidator
+
+[🚀 Live Demo](https://YOUR-FRONTEND-RENDER-URL.onrender.com) 
+
+
+# ⚡ StartupLens
 
 Validate your startup idea instantly. Get market analysis, SWOT breakdown, competitor insights, and revenue model suggestions — all saved to your account.
 
